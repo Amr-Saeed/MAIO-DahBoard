@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -11,7 +12,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const dispatch = useDispatch();
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -19,7 +20,7 @@ export default function LoginPage() {
         setError('');
         setLoading(true);
 
-        const result = await login(email, password);
+        const result = await dispatch(loginUser(email, password));
 
         if (result.success) {
             router.push('/dashboard');

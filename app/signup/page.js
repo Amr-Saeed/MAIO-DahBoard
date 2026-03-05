@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { signupUser } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
-import { apiClient } from '@/lib/api';
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ export default function SignupPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
     const router = useRouter();
 
     const handleChange = (e) => {
@@ -47,16 +49,23 @@ export default function SignupPage() {
         }
 
         try {
-            const { confirmPassword, ...registerData } = formData;
-            const result = await apiClient.register(registerData);
+            // Prepare metadata for Supabase user
+            const metadata = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                phoneNumber: formData.phoneNumber,
+                full_name: `${formData.firstName} ${formData.lastName}`,
+            };
+
+            const result = await dispatch(signupUser(formData.email, formData.password, metadata));
 
             if (result.success) {
                 setSuccess(true);
                 setTimeout(() => {
                     router.push('/login');
-                }, 2000);
+                }, 3000);
             } else {
-                setError(result.message || 'Registration failed. Please try again.');
+                setError(result.error || 'Registration failed. Please try again.');
             }
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
@@ -71,7 +80,12 @@ export default function SignupPage() {
                 <div className="max-w-md w-full p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700 text-center">
                     <div className="text-green-600 dark:text-green-400 text-5xl mb-4">✓</div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Registration Successful!</h2>
-                    <p className="text-gray-600 dark:text-gray-400">Redirecting to login page...</p>
+                    <p className="text-gray-600 dark:text-gray-400 mb-2">
+                        Please check your email to verify your account.
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-500 text-sm">
+                        Redirecting to login page...
+                    </p>
                 </div>
             </div>
         );
