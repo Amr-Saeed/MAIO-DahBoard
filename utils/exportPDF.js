@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 /**
  * Export users data to PDF
@@ -19,16 +19,16 @@ export const exportUsersToPDF = (users, title = 'Users Report') => {
 
     // Prepare table data
     const tableData = users.map(user => [
-        `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
         user.email || '',
         user.role || '',
         user.status || '',
         user.verificationStatus || '',
-        user.phoneNumber || 'N/A',
+        user.phone || user.phoneNumber || 'N/A',
     ]);
 
-    // Add table
-    doc.autoTable({
+    // Add table using autoTable
+    autoTable(doc, {
         startY: 35,
         head: [['Name', 'Email', 'Role', 'Status', 'Verification', 'Phone']],
         body: tableData,
@@ -59,16 +59,16 @@ export const exportAppointmentsToPDF = (appointments, title = 'Appointments Repo
 
     // Prepare table data
     const tableData = appointments.map(apt => [
-        new Date(apt.appointmentDate).toLocaleDateString(),
-        apt.timeSlot || 'N/A',
-        `${apt.patient?.firstName || ''} ${apt.patient?.lastName || ''}`.trim(),
-        `${apt.doctor?.firstName || ''} ${apt.doctor?.lastName || ''}`.trim(),
+        apt.date ? new Date(apt.date).toLocaleDateString() : new Date(apt.appointmentDate).toLocaleDateString(),
+        apt.time || apt.timeSlot || 'N/A',
+        apt.patient?.name || `${apt.patient?.firstName || ''} ${apt.patient?.lastName || ''}`.trim(),
+        apt.doctor?.name || `${apt.doctor?.firstName || ''} ${apt.doctor?.lastName || ''}`.trim(),
         apt.status || '',
-        apt.reasonForVisit?.substring(0, 50) || 'N/A',
+        (apt.reason || apt.reasonForVisit || 'N/A').substring(0, 50),
     ]);
 
-    // Add table
-    doc.autoTable({
+    // Add table using autoTable
+    autoTable(doc, {
         startY: 35,
         head: [['Date', 'Time', 'Patient', 'Doctor', 'Status', 'Reason']],
         body: tableData,

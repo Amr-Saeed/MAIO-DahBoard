@@ -407,22 +407,28 @@ export default function UserDetailPage() {
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
                             <div className="space-y-4">
+                                {/* Debug - show verification status */}
+                                <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                    Current Verification Status: <span className="font-semibold">{user.verificationStatus}</span>
+                                </div>
+
                                 {/* Verification Actions */}
                                 {user.verificationStatus === 'pending' && (
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        <h3 className="w-full text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Verification Actions:</h3>
                                         <button
                                             onClick={() => setShowApproveModal(true)}
                                             disabled={actionLoading}
                                             className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            Approve Verification
+                                            ✓ Approve Verification
                                         </button>
                                         <button
                                             onClick={() => setShowRejectModal(true)}
                                             disabled={actionLoading}
                                             className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            Reject Verification
+                                            ✗ Reject Verification
                                         </button>
                                     </div>
                                 )}

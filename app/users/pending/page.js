@@ -40,7 +40,6 @@ export default function PendingUsersPage() {
             const params = {
                 page,
                 limit,
-                status: 'pending',
                 verificationStatus: 'pending',
                 ...(role && { role }),
             };

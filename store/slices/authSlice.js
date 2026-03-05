@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { supabase } from '@/lib/supabase';
-import { apiClient } from '@/lib/api';
 
 const initialState = {
     isAuthenticated: false,
